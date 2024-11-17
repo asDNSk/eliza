@@ -292,9 +292,11 @@ export class PostgresDatabaseAdapter extends DatabaseAdapter {
     }): Promise<Memory[]> {
         const client = await this.pool.connect();
         try {
+            const vectorStr = `[${params.embedding.join(",")}]`;
+
             let sql = `
                 SELECT *,
-                1 - (embedding <-> $3) as similarity
+                1 - (embedding <-> $3::vector) as similarity
                 FROM memories
                 WHERE type = $1 AND "roomId" = $2
             `;
@@ -303,14 +305,14 @@ export class PostgresDatabaseAdapter extends DatabaseAdapter {
                 sql += ` AND "unique" = true`;
             }
 
-            sql += ` AND 1 - (embedding <-> $3) >= $4
-                ORDER BY embedding <-> $3
+            sql += ` AND 1 - (embedding <-> $3::vector) >= $4
+                ORDER BY embedding <-> $3::vector
                 LIMIT $5`;
 
             const { rows } = await client.query(sql, [
                 params.tableName,
                 params.roomId,
-                params.embedding,
+                vectorStr,
                 params.match_threshold,
                 params.match_count,
             ]);
@@ -323,6 +325,9 @@ export class PostgresDatabaseAdapter extends DatabaseAdapter {
                         : row.content,
                 similarity: row.similarity,
             }));
+        } catch (error) {
+            console.error("Search memories error:", error);
+            throw error;
         } finally {
             client.release();
         }

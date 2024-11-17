@@ -3,7 +3,7 @@ import { Actor, ActorSubclass, HttpAgent } from "@dfinity/agent";
 import { Ed25519KeyIdentity } from "@dfinity/identity";
 import { IDL } from "@dfinity/candid";
 import { Principal } from "@dfinity/principal";
-import { IAgentRuntime, Memory, Provider, State } from "@ai16z/eliza/src/types";
+import { IAgentRuntime, Memory, Provider, State } from "@ai16z/eliza";
 
 export class WalletProvider {
     private privateKey: string;
@@ -22,11 +22,10 @@ export class WalletProvider {
         if (!this.privateKey) {
             throw new Error("Private key is required");
         }
-
         try {
-            return Ed25519KeyIdentity.fromSecretKey(
-                Buffer.from(this.privateKey, "hex")
-            );
+            const rawKey = Buffer.from(this.privateKey, "base64");
+            const privateKeyBytes = rawKey.subarray(16, 48);
+            return Ed25519KeyIdentity.fromSecretKey(privateKeyBytes);
         } catch (error) {
             console.error("Error creating identity:", error);
             throw new Error("Failed to create ICP identity");
@@ -74,7 +73,7 @@ export const icpWalletProvider: Provider = {
     async get(
         runtime: IAgentRuntime,
         message: Memory,
-        state: State
+        state?: State
     ): Promise<any> {
         try {
             const privateKey = runtime.getSetting(
@@ -93,7 +92,7 @@ export const icpWalletProvider: Provider = {
                 principal: wallet.getPrincipal().toString(),
                 isAuthenticated: true,
             };
-        } catch (error) {
+        } catch (error: any) {
             console.error("Error in wallet provider:", error);
             return {
                 wallet: null,

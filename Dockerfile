@@ -26,5 +26,9 @@ ADD scripts /app/scripts
 ADD characters /app/characters
 ADD .env /app/.env
 
-# Command to run the container
-CMD ["tail", "-f", "/dev/null"]
+# 添加构建步骤
+RUN pnpm build
+
+# 设置环境变量
+ENV NODE_ENV=production
+ENV NO_INTERACTIVE=true

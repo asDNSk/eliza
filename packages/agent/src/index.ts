@@ -21,7 +21,7 @@ import Database from "better-sqlite3";
 import fs from "fs";
 import readline from "readline";
 import yargs from "yargs";
-
+import icpPlugin from "@ai16z/plugin-icp";
 export const wait = (minTime: number = 1000, maxTime: number = 3000) => {
     const waitTime =
         Math.floor(Math.random() * (maxTime - minTime + 1)) + minTime;
@@ -224,7 +224,10 @@ export async function createAgent(
     token: string
 ) {
     console.log("Creating runtime for character", character.name);
-    console.log("character.settings.secrets?.WALLET_PUBLIC_KEY", character.settings.secrets?.WALLET_PUBLIC_KEY)
+    console.log(
+        "character.settings.secrets?.WALLET_PUBLIC_KEY",
+        character.settings.secrets?.WALLET_PUBLIC_KEY
+    );
     return new AgentRuntime({
         databaseAdapter: db,
         token,
@@ -235,6 +238,7 @@ export async function createAgent(
             bootstrapPlugin,
             nodePlugin,
             character.settings.secrets?.WALLET_PUBLIC_KEY ? solanaPlugin : null,
+            icpPlugin,
         ].filter(Boolean),
         providers: [],
         actions: [],
@@ -286,19 +290,19 @@ const startAgents = async () => {
     } catch (error) {
         console.error("Error starting agents:", error);
     }
-
-    function chat() {
-        const agentId = characters[0].name ?? "Agent";
-        rl.question("You: ", async (input) => {
-            await handleUserInput(input, agentId);
-            if (input.toLowerCase() !== "exit") {
-                chat(); // Loop back to ask another question
-            }
-        });
+    if (process.env.NODE_ENV === "development" && !process.env.NO_INTERACTIVE) {
+        function chat() {
+            const agentId = characters[0].name ?? "Agent";
+            rl.question("You: ", async (input) => {
+                await handleUserInput(input, agentId);
+                if (input.toLowerCase() !== "exit") {
+                    chat(); // Loop back to ask another question
+                }
+            });
+        }
+        console.log("Chat started. Type 'exit' to quit.");
+        chat();
     }
-
-    console.log("Chat started. Type 'exit' to quit.");
-    chat();
 };
 
 startAgents().catch((error) => {

@@ -1,0 +1,18 @@
+# fly.toml app configuration file generated for eliza on 2024-11-17T13:54:50+08:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'eliza'
+primary_region = 'sjc'
+
+[build]
+  dockerfile = "Dockerfile"
+
+[processes]
+  app = "pnpm start --characters=./characters/nekone.character.json"
+
+[[vm]]
+  memory = "2gb"
+  cpu_kind = "shared"
+  cpus = 2
