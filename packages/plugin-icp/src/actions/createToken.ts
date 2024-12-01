@@ -20,6 +20,7 @@ import { unwrapOption, wrapOption } from "../utils/common/types/options";
 import { unwrapRustResultMap } from "../utils/common/types/results";
 import { icpWalletProvider } from "../providers/wallet";
 import {} from "@ai16z/eliza";
+import { uploadFileToWeb3Storage } from "../utils/uploadFile";
 
 const createTokenTemplate = `Based on the user's description, generate creative and memorable values for a new meme token on PickPump:
 
@@ -59,10 +60,10 @@ Example for a dog-themed token:
 async function createTokenTransaction(
     creator: ActorCreator,
     tokenInfo: CreateMemeTokenArg
-): Promise<any> {
+) {
     const actor: _SERVICE = await creator(
         idlFactory,
-        "bn4fo-iyaaa-aaaap-akp6a-cai"
+        "tl65e-yyaaa-aaaah-aq2pa-cai"
     );
     const result = await actor.create_token({
         ...tokenInfo,
@@ -79,6 +80,12 @@ async function createTokenTransaction(
         result,
         (ok) => ({
             ...ok,
+            id: ok.id.toString(),
+            created_at: ok.created_at.toString(),
+            available_token: ok.available_token.toString(),
+            volume_24h: ok.volume_24h.toString(),
+            last_tx_time: ok.last_tx_time.toString(),
+            market_cap_icp: ok.market_cap_icp.toString(),
             twitter: unwrapOption(ok.twitter),
             website: unwrapOption(ok.website),
             telegram: unwrapOption(ok.telegram),
@@ -127,9 +134,6 @@ export const executeCreateToken: Action = {
     description:
         "Create a new meme token on PickPump platform (Internet Computer). This action helps users create and launch tokens specifically on the PickPump platform.",
     validate: async (runtime: IAgentRuntime, message: Memory) => {
-        console.log("🔍 Validating CREATE_TOKEN action");
-        console.log("📝 Message content:", message.content);
-
         const keywords = [
             "pickpump",
             "pp",
@@ -147,25 +151,13 @@ export const executeCreateToken: Action = {
             "铸造",
         ];
 
-        // 从消息内容对象中获取文本
         const messageText = (
             typeof message.content === "string"
                 ? message.content
                 : message.content.text || ""
         ).toLowerCase();
 
-        console.log("📝 Processed message text:", messageText);
-
-        const isValid = keywords.some((keyword) => {
-            const match = messageText.includes(keyword.toLowerCase());
-            if (match) {
-                console.log(`✅ Matched keyword: ${keyword}`);
-            }
-            return match;
-        });
-
-        console.log("✅ Validation result:", isValid);
-        return isValid;
+        return keywords.some((keyword) => messageText.includes(keyword.toLowerCase()));
     },
     handler: async (
         runtime: IAgentRuntime,
@@ -174,37 +166,29 @@ export const executeCreateToken: Action = {
         _options: { [key: string]: unknown } | undefined,
         callback?: HandlerCallback
     ): Promise<void> => {
-        console.log("🚀 Starting CREATE_TOKEN handler");
-        console.log("📝 Input message:", message.content);
         callback?.({
             text: "🔄 Creating meme token...",
             action: "CREATE_TOKEN",
             type: "processing",
         });
+
         if (!state) {
-            console.log("Creating new state...");
             state = (await runtime.composeState(message)) as State;
         } else {
-            console.log("Updating existing state...");
             state = await runtime.updateRecentMessageState(state);
         }
 
-        console.log("🔄 Composing token context...");
         const createTokenContext = composeContext({
             state,
             template: createTokenTemplate,
         });
-        console.log("Token context:", createTokenContext);
 
-        console.log("🤖 Generating token info...");
         const response = await generateObject({
             runtime,
             context: createTokenContext,
             modelClass: ModelClass.LARGE,
         });
-        console.log("Generated token info:", response);
 
-        console.log("🎨 Generating logo prompt...");
         const logoPromptContext = composeContext({
             state,
             template: logoPromptTemplate.replace(
@@ -212,52 +196,45 @@ export const executeCreateToken: Action = {
                 response.description
             ),
         });
-        console.log("Logo prompt context:", logoPromptContext);
 
         const logoPrompt = await generateText({
             runtime,
             context: logoPromptContext,
             modelClass: ModelClass.SMALL,
         });
-        console.log("Generated logo prompt:", logoPrompt);
 
-        console.log("🖼️ Generating token logo...");
         const logo = await generateTokenLogo(logoPrompt, runtime);
         if (!logo) {
             console.error("❌ Logo generation failed");
             throw new Error("Failed to generate token logo");
         }
-        console.log("✅ Logo generated successfully");
+
+        const logoUploadResult = await uploadFileToWeb3Storage(logo);
+        if (!logoUploadResult.urls?.gateway) {
+            throw new Error("Failed to upload logo to Web3Storage");
+        }
 
         try {
-            console.log("💳 Getting wallet provider...");
             const { wallet } = await icpWalletProvider.get(
                 runtime,
                 message,
                 state
             );
-            console.log("Wallet obtained");
 
-            console.log("🔄 Creating token transaction...");
             const creator = wallet.createActor;
             const createTokenResult = await createTokenTransaction(creator, {
                 name: response.name,
                 symbol: response.symbol,
                 description: response.description,
-                logo,
-                website: response.website,
-                twitter: response.twitter,
-                telegram: response.telegram,
+                logo: logoUploadResult.urls.gateway,
             });
 
-            console.log("✨ Token created successfully:", createTokenResult);
             const responseMsg = {
                 text: `✨ Created new meme token:\n🪙 ${response.name} (${response.symbol})\n📝 ${response.description}`,
                 data: createTokenResult,
                 action: "CREATE_TOKEN",
                 type: "success",
             };
-            console.log("📤 Final response message:", responseMsg);
             callback?.(responseMsg);
         } catch (error: any) {
             console.error("❌ Error creating token:", error);
@@ -267,7 +244,6 @@ export const executeCreateToken: Action = {
                 action: "CREATE_TOKEN",
                 type: "error",
             };
-            console.log("📤 Error response message:", responseMsg);
             callback?.(responseMsg);
         }
     },

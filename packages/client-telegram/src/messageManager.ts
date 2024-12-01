@@ -446,6 +446,8 @@ export class MessageManager {
 
                 // Send response in chunks
                 const callback: HandlerCallback = async (content: Content) => {
+                    console.log("Processing response content:", content);
+
                     const sentMessages = await this.sendMessageInChunks(
                         ctx,
                         content.text,
@@ -459,6 +461,10 @@ export class MessageManager {
                         const sentMessage = sentMessages[i];
                         const isLastMessage = i === sentMessages.length - 1;
 
+                        // Check if CREATE_TOKEN action is present
+                        const hasCreateToken =
+                            sentMessage.text.includes("[CREATE_TOKEN]");
+
                         const memory: Memory = {
                             id: stringToUuid(
                                 sentMessage.message_id.toString() +
@@ -471,12 +477,22 @@ export class MessageManager {
                             content: {
                                 ...content,
                                 text: sentMessage.text,
-                                action: !isLastMessage ? "CONTINUE" : undefined,
+                                // Modify action handling logic
+                                action: hasCreateToken
+                                    ? "CREATE_TOKEN"
+                                    : !isLastMessage
+                                      ? "CONTINUE"
+                                      : undefined,
                                 inReplyTo: messageId,
                             },
                             createdAt: sentMessage.date * 1000,
                             embedding: embeddingZeroVector,
                         };
+
+                        console.log(
+                            "Created memory with action:",
+                            memory.content.action
+                        );
 
                         await this.runtime.messageManager.createMemory(memory);
                         memories.push(memory);
