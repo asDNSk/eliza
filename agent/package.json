@@ -1,6 +1,6 @@
 {
     "name": "@ai16z/agent",
-    "version": "0.0.1",
+    "version": "0.1.5-alpha.1",
     "main": "src/index.ts",
     "type": "module",
     "scripts": {
@@ -32,6 +32,7 @@
         "@ai16z/plugin-node": "workspace:*",
         "@ai16z/plugin-solana": "workspace:*",
         "@ai16z/plugin-0g": "workspace:*",
+        "@ai16z/plugin-goat": "workspace:*",
         "@ai16z/plugin-starknet": "workspace:*",
         "@ai16z/plugin-icp": "workspace:*",
         "@ai16z/plugin-tee": "workspace:*",
