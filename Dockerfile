@@ -1,5 +1,4 @@
-FROM node:23.1.0
-# Install pnpm globally
+FROM node:23.3.0
 RUN npm install -g pnpm@9.4.0
 
 # Set the working directory
@@ -10,16 +9,14 @@ ADD pnpm-workspace.yaml /app/pnpm-workspace.yaml
 ADD package.json /app/package.json
 ADD .npmrc /app/.npmrc
 ADD tsconfig.json /app/tsconfig.json
-ADD pnpm-lock.yaml /app/pnpm-lock.yaml
-RUN pnpm i
+ADD turbo.json /app/turbo.json
 
 # Add the documentation
 ADD docs /app/docs
-RUN pnpm i
 
 # Add the rest of the application code
+ADD agent /app/agent
 ADD packages /app/packages
-RUN pnpm i
 
 # Add the environment variables
 ADD scripts /app/scripts
