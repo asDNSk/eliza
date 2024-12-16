@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS memories (
     "type" TEXT NOT NULL,
     "createdAt" TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
     "content" JSONB NOT NULL,
-    "embedding" vector(get_embedding_dimension()),  -- Dynamic vector size
+    "embedding" vector(1536),  -- Dynamic vector size
     "userId" UUID REFERENCES accounts("id"),
     "agentId" UUID REFERENCES accounts("id"),
     "roomId" UUID REFERENCES rooms("id"),

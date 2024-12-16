@@ -23,15 +23,6 @@ import { uploadFileToWeb3Storage } from "../apis/uploadFile";
 import { createTokenTemplate, logoPromptTemplate } from "./prompts/token";
 import { CANISTER_IDS } from "../constants/canisters";
 
-const logoPromptTemplate = `Based on this token idea: "{{description}}", create a detailed prompt for generating a logo image.
-The prompt should describe visual elements, style, and mood for the logo.
-Focus on making it memorable and suitable for a cryptocurrency token.
-Keep the response short and specific.
-Respond with only the prompt text, no additional formatting.
-
-Example for a dog-themed token:
-"A playful cartoon dog face with a cryptocurrency symbol on its collar, using vibrant colors and bold outlines, crypto-themed minimal style"`;
-
 async function createTokenTransaction(
     creator: ActorCreator,
     tokenInfo: CreateMemeTokenArg

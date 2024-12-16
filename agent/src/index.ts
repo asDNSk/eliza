@@ -1,4 +1,5 @@
 import { PostgresDatabaseAdapter } from "@ai16z/adapter-postgres";
+
 import { SqliteDatabaseAdapter } from "@ai16z/adapter-sqlite";
 import { AutoClientInterface } from "@ai16z/client-auto";
 import { DirectClientInterface } from "@ai16z/client-direct";
@@ -37,6 +38,7 @@ import { evmPlugin } from "@ai16z/plugin-evm";
 import { createNodePlugin } from "@ai16z/plugin-node";
 import { solanaPlugin } from "@ai16z/plugin-solana";
 import { teePlugin } from "@ai16z/plugin-tee";
+import { icpPlugin } from "@ai16z/plugin-icp";
 import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
@@ -273,7 +275,6 @@ function initializeDatabase(dataDir: string) {
             connectionString: process.env.POSTGRES_URL,
             parseInputs: true,
         });
-
         // Test the connection
         db.init()
             .then(() => {
@@ -371,6 +372,9 @@ export function createAgent(
             (getSecret(character, "WALLET_PUBLIC_KEY") &&
                 !getSecret(character, "WALLET_PUBLIC_KEY")?.startsWith("0x"))
                 ? solanaPlugin
+                : null,
+            getSecret(character, "INTERNET_COMPUTER_PRIVATE_KEY")
+                ? icpPlugin
                 : null,
             getSecret(character, "EVM_PRIVATE_KEY") ||
             (getSecret(character, "WALLET_PUBLIC_KEY") &&

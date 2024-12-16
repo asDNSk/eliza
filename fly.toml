@@ -9,8 +9,6 @@ primary_region = 'sjc'
 [build]
   dockerfile = "Dockerfile"
 
-[processes]
-  app = "pnpm start --characters=./characters/nekone.character.json"
 
 [[vm]]
   memory = "2gb"
