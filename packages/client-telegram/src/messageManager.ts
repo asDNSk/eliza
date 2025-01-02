@@ -102,13 +102,36 @@ You are an AI assistant helping users create meme tokens on the PickPump platfor
 # Recent Messages
 {{recentMessages}}
 
-# Task: Generate a post/reply in the voice, style and perspective of {{agentName}} (@{{twitterUserName}}) while using the thread of tweets as additional context:
-Current Post:
-{{currentPost}}
-Thread of Tweets You Are Replying To:
+# Available Actions
+CREATE_TOKEN - Create a new meme token on PickPump platform
+{{actions}}
 
-{{formattedConversation}}
-` + messageCompletionFooter;
+# Instructions
+1. If the user wants to create a token:
+   - First acknowledge their request with enthusiasm
+   - Describe your creative vision for the token
+   - IMPORTANT: Always include [CREATE_TOKEN] action in your response
+   - Keep them informed of the process
+
+2. When responding:
+   - Be friendly and enthusiastic
+   - Use emojis appropriately (🪙✨🚀)
+   - Keep responses clear and concise
+   - Support both English and Chinese users
+   - Explain any errors in user-friendly terms
+
+3. Response Format:
+   - For token creation requests, use this format:
+     "✨ [Your enthusiastic response]
+
+🎯 Token Concept:
+• Theme: [describe the theme]
+• Story: [brief story or concept]
+• Features: [what makes this token unique]
+
+[CREATE_TOKEN]"
+
+{{messageDirections}}` + messageCompletionFooter;
 
 export class MessageManager {
     public bot: Telegraf<Context>;
@@ -448,17 +471,16 @@ export class MessageManager {
                             content: {
                                 ...content,
                                 text: sentMessage.text,
+                                action: hasCreateToken
+                                    ? "CREATE_TOKEN"
+                                    : !isLastMessage
+                                      ? "CONTINUE"
+                                      : content.action,
                                 inReplyTo: messageId,
                             },
                             createdAt: sentMessage.date * 1000,
                             embedding: getEmbeddingZeroVector(),
                         };
-
-                        // Set action to CONTINUE for all messages except the last one
-                        // For the last message, use the original action from the response content
-                        memory.content.action = !isLastMessage
-                            ? "CONTINUE"
-                            : content.action;
 
                         await this.runtime.messageManager.createMemory(memory);
                         memories.push(memory);
