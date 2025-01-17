@@ -5,6 +5,7 @@ export class CircuitBreaker {
     private failureCount: number = 0;
     private lastFailureTime?: number;
     private halfOpenSuccesses: number = 0;
+    private readonly isDisabled: boolean;
 
     private readonly failureThreshold: number;
     private readonly resetTimeout: number;
@@ -15,14 +16,22 @@ export class CircuitBreaker {
             failureThreshold?: number;
             resetTimeout?: number;
             halfOpenMaxAttempts?: number;
+            disabled?: boolean;
         } = {}
     ) {
+        this.isDisabled =
+            config.disabled ?? process.env.NODE_ENV === "development";
+
         this.failureThreshold = config.failureThreshold ?? 5;
         this.resetTimeout = config.resetTimeout ?? 60000;
         this.halfOpenMaxAttempts = config.halfOpenMaxAttempts ?? 3;
     }
 
     async execute<T>(operation: () => Promise<T>): Promise<T> {
+        if (this.isDisabled) {
+            return operation();
+        }
+
         if (this.state === "OPEN") {
             if (Date.now() - (this.lastFailureTime || 0) > this.resetTimeout) {
                 this.state = "HALF_OPEN";

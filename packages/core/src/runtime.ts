@@ -32,6 +32,7 @@ import {
     IDatabaseAdapter,
     IMemoryManager,
     KnowledgeItem,
+    KnowledgeItemJSON,
     ModelClass,
     ModelProviderName,
     Plugin,
@@ -46,6 +47,8 @@ import {
     type Memory,
 } from "./types.ts";
 import { stringToUuid } from "./uuid.ts";
+import fs from "fs/promises";
+import path from "path";
 
 /**
  * Represents the runtime environment for an agent, handling message processing,
@@ -396,13 +399,18 @@ export class AgentRuntime implements IAgentRuntime {
                 );
         }
 
-        if (
-            this.character &&
-            this.character.knowledge &&
-            this.character.knowledge.length > 0
-        ) {
-            await this.processCharacterKnowledge(this.character.knowledge);
+        // Load knowledge from file if specified in character settings
+        if (this.character.settings?.knowledgePath) {
+            try {
+                await this.loadKnowledgeFromFile(
+                    this.character.settings.knowledgePath
+                );
+            } catch (error) {
+                elizaLogger.error(`Failed to load knowledge file:`, error);
+            }
         }
+
+        await this.processCharacterKnowledge(this.character.knowledge);
     }
 
     /**
@@ -1249,6 +1257,101 @@ Text: ${attachment.text}
             recentMessagesData,
             attachments: formattedAttachments,
         } as State;
+    }
+
+    // 加载单个知识文件
+    public async loadKnowledgeFromFile(filePath: string) {
+        try {
+            const fileContent = await fs.readFile(filePath, "utf-8");
+            const knowledgeItems = JSON.parse(fileContent)
+                .items as KnowledgeItemJSON[];
+
+            elizaLogger.info(
+                `Loading ${knowledgeItems.length} knowledge items from ${path.basename(filePath)}`
+            );
+
+            await this.processStructuredKnowledge(knowledgeItems);
+
+            elizaLogger.success(
+                `Successfully loaded knowledge from ${path.basename(filePath)}`
+            );
+        } catch (error) {
+            elizaLogger.error(
+                `Failed to load knowledge from ${filePath}:`,
+                error
+            );
+            throw error;
+        }
+    }
+
+    // 加载整个知识目录
+    public async loadKnowledgeFromDirectory(dirPath: string) {
+        try {
+            const files = await fs.readdir(dirPath);
+            const jsonFiles = files.filter((file) => file.endsWith(".json"));
+
+            elizaLogger.info(
+                `Found ${jsonFiles.length} JSON files in ${path.basename(dirPath)}`
+            );
+
+            for (const file of jsonFiles) {
+                const filePath = path.join(dirPath, file);
+                await this.loadKnowledgeFromFile(filePath);
+            }
+
+            elizaLogger.success(
+                `Successfully loaded knowledge from all files in ${path.basename(dirPath)}`
+            );
+        } catch (error) {
+            elizaLogger.error(
+                `Failed to load knowledge from directory ${dirPath}:`,
+                error
+            );
+            throw error;
+        }
+    }
+
+    private async processStructuredKnowledge(items: KnowledgeItemJSON[]) {
+        const BATCH_SIZE = 50;
+
+        for (let i = 0; i < items.length; i += BATCH_SIZE) {
+            const batch = items.slice(i, i + BATCH_SIZE);
+
+            await Promise.all(
+                batch.map(async (item) => {
+                    try {
+                        const knowledgeId = stringToUuid(item.content);
+                        const existingDocument =
+                            await this.documentsManager.getMemoryById(
+                                knowledgeId
+                            );
+
+                        if (existingDocument) {
+                            return;
+                        }
+
+                        elizaLogger.info(
+                            `Processing structured knowledge for ${this.character.name} from ${item.metadata.source}`
+                        );
+
+                        await knowledge.set(this, {
+                            id: knowledgeId,
+                            content: {
+                                text: item.content,
+                                metadata: item.metadata,
+                            },
+                        });
+                    } catch (error) {
+                        elizaLogger.error(
+                            `Failed to process knowledge item ${item.id}:`,
+                            error
+                        );
+                    }
+                })
+            );
+
+            await new Promise((resolve) => setTimeout(resolve, 100));
+        }
     }
 }
 

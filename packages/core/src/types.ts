@@ -701,6 +701,7 @@ export type Character = {
             solana?: any[];
             [key: string]: any[];
         };
+        knowledgePath?: string;
     };
 
     /** Optional client-specific config */
@@ -1154,4 +1155,17 @@ export enum LoggingLevel {
 export type KnowledgeItem = {
     id: UUID;
     content: Content;
+};
+
+export type KnowledgeItemJSON = {
+    id: string;
+    content: string;
+    metadata: {
+        source: string;
+        type: string;
+        tags: string[];
+        timestamp: string;
+        length: number;
+        chunk_hash: string;
+    };
 };
