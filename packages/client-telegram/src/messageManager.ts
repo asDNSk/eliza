@@ -96,42 +96,36 @@ Thread of Tweets You Are Replying To:
 ` + shouldRespondFooter;
 
 const telegramMessageHandlerTemplate =
-    `# Context
-You are an AI assistant helping users create meme tokens on the PickPump platform.
+    // {{goals}}
+    `
+{{actionExamples}}
+(Action examples are for reference only. Do not use the information from them in your response.)
 
-# Recent Messages
-{{recentMessages}}
+# Knowledge
+{{knowledge}}
 
-# Available Actions
-CREATE_TOKEN - Create a new meme token on PickPump platform
+# About {{agentName}}:
+{{bio}}
+{{lore}}
+
+{{characterMessageExamples}}
+
+{{providers}}
+
+{{attachments}}
+
 {{actions}}
 
-# Instructions
-1. If the user wants to create a token:
-   - First acknowledge their request with enthusiasm
-   - Describe your creative vision for the token
-   - IMPORTANT: Always include [CREATE_TOKEN] action in your response
-   - Keep them informed of the process
+# Capabilities
+Note that {{agentName}} is capable of reading/seeing/hearing various forms of media, including images, videos, audio, plaintext and PDFs. Recent attachments have been included above under the "Attachments" section.
 
-2. When responding:
-   - Be friendly and enthusiastic
-   - Use emojis appropriately (🪙✨🚀)
-   - Keep responses clear and concise
-   - Support both English and Chinese users
-   - Explain any errors in user-friendly terms
+{{messageDirections}}
 
-3. Response Format:
-   - For token creation requests, use this format:
-     "✨ [Your enthusiastic response]
+{{recentMessages}}
 
-🎯 Token Concept:
-• Theme: [describe the theme]
-• Story: [brief story or concept]
-• Features: [what makes this token unique]
-
-[CREATE_TOKEN]"
-
-{{messageDirections}}` + messageCompletionFooter;
+# Task: Generate a reply in the voice, style and perspective of {{agentName}} while using the thread above as additional context. You are replying on Telegram.
+{{formattedConversation}}
+` + messageCompletionFooter;
 
 export class MessageManager {
     public bot: Telegraf<Context>;
@@ -455,10 +449,6 @@ export class MessageManager {
                         const sentMessage = sentMessages[i];
                         const isLastMessage = i === sentMessages.length - 1;
 
-                        // Check if CREATE_TOKEN action is present
-                        const hasCreateToken =
-                            sentMessage.text.includes("[CREATE_TOKEN]");
-
                         const memory: Memory = {
                             id: stringToUuid(
                                 sentMessage.message_id.toString() +
@@ -471,11 +461,9 @@ export class MessageManager {
                             content: {
                                 ...content,
                                 text: sentMessage.text,
-                                action: hasCreateToken
-                                    ? "CREATE_TOKEN"
-                                    : !isLastMessage
-                                      ? "CONTINUE"
-                                      : content.action,
+                                action: !isLastMessage
+                                    ? "CONTINUE"
+                                    : content.action,
                                 inReplyTo: messageId,
                             },
                             createdAt: sentMessage.date * 1000,

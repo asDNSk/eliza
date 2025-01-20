@@ -136,7 +136,6 @@ export const executeCreateToken: Action = {
             action: "CREATE_TOKEN",
             type: "processing",
         });
-
         if (!state) {
             state = (await runtime.composeState(message)) as State;
         } else {
@@ -154,31 +153,30 @@ export const executeCreateToken: Action = {
             modelClass: ModelClass.LARGE,
         });
 
-        const logoPromptContext = composeContext({
-            state,
-            template: logoPromptTemplate.replace(
-                "{{description}}",
-                response.description
-            ),
-        });
-
-        const logoPrompt = await generateText({
-            runtime,
-            context: logoPromptContext,
-            modelClass: ModelClass.SMALL,
-        });
-
-        const logo = await generateTokenLogo(logoPrompt, runtime);
-        if (!logo) {
-            throw new Error("Failed to generate token logo");
-        }
-
-        const logoUploadResult = await uploadFileToWeb3Storage(logo);
-        if (!logoUploadResult.urls?.gateway) {
-            throw new Error("Failed to upload logo to Web3Storage");
-        }
-
         try {
+            const logoPromptContext = composeContext({
+                state,
+                template: logoPromptTemplate.replace(
+                    "{{description}}",
+                    response.description
+                ),
+            });
+
+            const logoPrompt = await generateText({
+                runtime,
+                context: logoPromptContext,
+                modelClass: ModelClass.SMALL,
+            });
+
+            const logo = await generateTokenLogo(logoPrompt, runtime);
+            if (!logo) {
+                throw new Error("Failed to generate token logo");
+            }
+
+            const logoUploadResult = await uploadFileToWeb3Storage(logo);
+            if (!logoUploadResult.urls?.gateway) {
+                throw new Error("Failed to upload logo to Web3Storage");
+            }
             const { wallet } = await icpWalletProvider.get(
                 runtime,
                 message,
@@ -194,7 +192,7 @@ export const executeCreateToken: Action = {
             });
 
             const responseMsg = {
-                text: `✨ Created new meme token:\n🪙 ${response.name} (${response.symbol})\n📝 ${response.description}`,
+                text: `✨ Created new meme token:\n🪙 ${response.name} (${response.symbol})\n📝 link: https://pickpump.xyz/swap/${createTokenResult.id}`,
                 data: createTokenResult,
                 action: "CREATE_TOKEN",
                 type: "success",
@@ -209,38 +207,5 @@ export const executeCreateToken: Action = {
             callback?.(responseMsg);
         }
     },
-    examples: [
-        [
-            {
-                user: "{{user1}}",
-                content: "I want to create a space cat token on PickPump",
-            },
-            {
-                user: "{{user2}}",
-                content: {
-                    text: "Creating space cat token on PickPump...",
-                    action: "CREATE_TOKEN",
-                },
-            },
-            {
-                user: "{{user2}}",
-                content: {
-                    text: "✨ Token created successfully!",
-                },
-            },
-        ],
-        [
-            {
-                user: "{{user1}}",
-                content: "Help me create a pizza-themed funny token on PP",
-            },
-            {
-                user: "{{user2}}",
-                content: {
-                    text: "Creating pizza token on PickPump...",
-                    action: "CREATE_TOKEN",
-                },
-            },
-        ],
-    ] as ActionExample[][],
+    examples: [],
 } as Action;
