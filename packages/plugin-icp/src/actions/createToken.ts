@@ -3,6 +3,7 @@ import {
     generateImage,
     generateText,
     generateObject,
+    elizaLogger,
 } from "@ai16z/eliza";
 import {
     ActionExample,
@@ -131,11 +132,6 @@ export const executeCreateToken: Action = {
         _options: { [key: string]: unknown } | undefined,
         callback?: HandlerCallback
     ): Promise<void> => {
-        callback?.({
-            text: "🔄 Creating meme token...",
-            action: "CREATE_TOKEN",
-            type: "processing",
-        });
         if (!state) {
             state = (await runtime.composeState(message)) as State;
         } else {
@@ -174,6 +170,7 @@ export const executeCreateToken: Action = {
             }
 
             const logoUploadResult = await uploadFileToWeb3Storage(logo);
+            elizaLogger.info("logoUploadResult", logoUploadResult);
             if (!logoUploadResult.urls?.gateway) {
                 throw new Error("Failed to upload logo to Web3Storage");
             }
