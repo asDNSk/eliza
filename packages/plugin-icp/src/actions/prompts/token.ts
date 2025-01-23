@@ -1,11 +1,21 @@
-export const createTokenTemplate = `Based on the user's description, generate creative and memorable values for a new meme token on PickPump:
+export const createTokenTemplate = `Extract the most recent token idea or description from these recent messages and generate creative and memorable values for a new meme token on PickPump:
 
-User's idea: "{{recentMessages}}"
+Recent conversation context:
+{{recentMessages}}
 
-Please generate:
+First, identify and extract the latest token idea or description from the conversation above.
+Then, based on that extracted idea, generate:
 1. A catchy and fun token name that reflects the theme
 2. A 3-4 letter symbol based on the name (all caps)
-3. An engaging and humorous description (include emojis)
+3. An engaging and humorous description - Some style examples:
+   - "Much wow! Such gains! The first Doge-approved token for rocket science!"
+   - "In a world where tokens come and go, one meme dared to be different"
+   - "Not your grandma's token, unless your grandma is really into experimental physics"
+   - "Turning coffee into code since 2024. Side effects may include spontaneous wealth"
+   - "The token that puts the 'fun' in fungible and the 'able' in unstable"
+
+Feel free to be creative with the description. Use humor, wordplay, cultural references, and emojis (optional) in a way that naturally fits the token's theme. Don't force any specific format or style.
+
 4. Principal ID (pid) should be extracted from the recent messages if provided (format: "j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae"), otherwise set to null
 5. Set other fields to null
 
@@ -14,7 +24,7 @@ Example response:
 {
     "name": "CatLaser",
     "symbol": "PAWS",
-    "description": "The first meme token powered by feline laser-chasing energy! Watch your investment zoom around like a red dot! 😺🔴✨",
+    "description": "The first token powered by feline laser-chasing energy. Warning: May cause sudden urges to invest in red dot technology",
     "logo": null,
     "website": null,
     "twitter": null,
@@ -23,7 +33,7 @@ Example response:
 }
 \`\`\`
 
-Generate appropriate meme token information based on the user's description.
+Generate appropriate meme token information based on the extracted latest idea.
 Respond with a JSON markdown block containing only the generated values.`;
 
 export const logoPromptTemplate = (basePrompt: string) =>

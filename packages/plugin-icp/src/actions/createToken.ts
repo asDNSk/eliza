@@ -198,6 +198,7 @@ export const executeCreateToken: Action = {
             };
             callback?.(responseMsg);
         } catch (error: any) {
+            elizaLogger.error("createToken error", error);
             const responseMsg = {
                 text: `Failed to create token`,
                 action: "CONTINUE",
@@ -229,7 +230,73 @@ export const executeCreateToken: Action = {
             {
                 user: "NEKONE",
                 content: {
-                    text: "Perfect! I'll start creating your GameCoin token for gaming transactions using your Principal ID abc123def456! 🎮",
+                    text: "Great! Let me confirm the details before we proceed:\n\n🎮 Token Name: GameCoin\n🎯 Purpose: Gaming platform token for in-game purchases and rewards\n🆔 Creator PID: j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae\n\nPlease confirm if these details are correct by replying 'yes'. If you need to make any changes, please let me know!",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "yes",
+                },
+            },
+            {
+                user: "NEKONE",
+                content: {
+                    text: "Perfect! I'll start creating your GameCoin token for gaming transactions! 🎮",
+                    action: "CREATE_TOKEN",
+                    data: {
+                        pid: "j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae",
+                    },
+                },
+            },
+        ],
+        [
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "I want to create a token on ICP but I'm not sure what kind of token to create. Can you help me with some ideas?",
+                },
+            },
+            {
+                user: "NEKONE",
+                content: {
+                    text: "I'd love to help you brainstorm some token ideas! 🚀 First, let me ask you a few questions:\n\n1. What are your interests or areas of expertise?\n2. Do you have any specific goals for the token (e.g., solving a problem, creating a community, etc.)?\n3. What kind of community would you like to build?",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "I'm really into fitness and working out. I go to the gym regularly.",
+                },
+            },
+            {
+                user: "NEKONE",
+                content: {
+                    text: "That's perfect! Based on your interest in fitness, I have an exciting token concept for you: 'FitQuest' - a token that gamifies fitness achievements! 🏋️‍♂️\n\nHere's the concept:\n- Users earn tokens for completing workouts, reaching fitness goals, and maintaining streaks\n- Tokens can be used for gym membership discounts, fitness equipment, or personal training sessions\n- Creates a community of fitness enthusiasts who motivate each other\n\nWhat do you think about this idea? If you like it, I'll just need your Principal ID to proceed with creation!",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "That sounds amazing! My PID is j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae",
+                },
+            },
+            {
+                user: "NEKONE",
+                content: {
+                    text: "Excellent! Let me confirm the details for your FitQuest token:\n\n💪 Token Name: FitQuest\n🎯 Purpose: Reward fitness achievements and create a fitness community\n📱 Use Cases:\n- Workout completion rewards\n- Gym membership benefits\n- Fitness equipment discounts\n🆔 Creator PID: j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae\n\nDoes everything look correct? Please reply 'yes' to proceed with creation!",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "yes",
+                },
+            },
+            {
+                user: "NEKONE",
+                content: {
+                    text: "Awesome! I'll start creating your FitQuest token now! 💪",
                     action: "CREATE_TOKEN",
                     data: {
                         pid: "j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae",
