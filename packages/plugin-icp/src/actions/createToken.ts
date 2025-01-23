@@ -194,5 +194,36 @@ export const executeCreateToken: Action = {
             callback?.(responseMsg);
         }
     },
-    examples: [],
+    examples: [
+        [
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "How can I create a token on ICP?",
+                },
+            },
+            {
+                user: "NEKONE",
+                content: {
+                    text: "I can help you create a token on the Internet Computer! 🚀 To get started, I'll need two pieces of information:\n\n1. Your Principal ID (PID) - this is your unique identifier on the Internet Computer\n2. A brief description of your token project, including its name and purpose\n\nCould you please provide these details? If you need help finding your Principal ID, I can guide you through that process! 🛠️",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "My PID is j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae, and I want to create a token called GameCoin for my gaming platform, it will be used for in-game purchases and rewards",
+                },
+            },
+            {
+                user: "NEKONE",
+                content: {
+                    text: "Perfect! I'll start creating your GameCoin token for gaming transactions using your Principal ID abc123def456! 🎮",
+                    action: "CREATE_TOKEN",
+                    data: {
+                        pid: "j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae",
+                    },
+                },
+            },
+        ],
+    ],
 } as Action;
