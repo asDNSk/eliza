@@ -187,8 +187,8 @@ export const executeCreateToken: Action = {
             callback?.(responseMsg);
         } catch (error: any) {
             const responseMsg = {
-                text: `Failed to create token: ${error.message}`,
-                action: "CREATE_TOKEN",
+                text: `Failed to create token`,
+                action: "CONTINUE",
                 type: "error",
             };
             callback?.(responseMsg);

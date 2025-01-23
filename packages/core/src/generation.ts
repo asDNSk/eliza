@@ -997,7 +997,9 @@ export const generateImage = async (
                 n: data.count,
                 response_format: "b64_json",
             });
-            const base64s = response.data.map((image) => `${image.b64_json}`);
+            const base64s = response.data.map(
+                (image) => `data:image/png;base64,${image.b64_json}`
+            );
             return { success: true, data: base64s };
         }
     } catch (error) {
