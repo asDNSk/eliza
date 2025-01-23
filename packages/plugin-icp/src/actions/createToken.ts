@@ -23,6 +23,7 @@ import { icpWalletProvider } from "../providers/wallet";
 import { uploadFileToWeb3Storage } from "../apis/uploadFile";
 import { createTokenTemplate, logoPromptTemplate } from "./prompts/token";
 import { CANISTER_IDS } from "../constants/canisters";
+import { Principal } from "@dfinity/principal";
 
 async function createTokenTransaction(
     creator: ActorCreator,
@@ -31,6 +32,7 @@ async function createTokenTransaction(
     const actor: _SERVICE = await creator(idlFactory, CANISTER_IDS.PICK_PUMP);
     const result = await actor.create_token({
         ...tokenInfo,
+        creator: wrapOption(tokenInfo.creator),
         name: tokenInfo.name,
         symbol: tokenInfo.symbol,
         description: tokenInfo.description,
@@ -169,14 +171,24 @@ export const executeCreateToken: Action = {
                 message,
                 state
             );
-
-            const creator = wallet.createActor;
-            const createTokenResult = await createTokenTransaction(creator, {
-                name: response.name,
-                symbol: response.symbol,
-                description: response.description,
-                logo: logoUploadResult.urls.gateway,
-            });
+            let creator: Principal | undefined = undefined;
+            try {
+                creator = Principal.fromText(response.pid);
+                elizaLogger.info("creator", response.pid);
+            } catch (error) {
+                creator = undefined;
+            }
+            const actorCreator = wallet.createActor;
+            const createTokenResult = await createTokenTransaction(
+                actorCreator,
+                {
+                    name: response.name,
+                    symbol: response.symbol,
+                    description: response.description,
+                    logo: logoUploadResult.urls.gateway,
+                    creator,
+                }
+            );
 
             const responseMsg = {
                 text: `✨ Created new meme token:\n🪙 ${response.name} (${response.symbol})\n📝 link: https://pickpump.xyz/swap/${createTokenResult.id}`,
