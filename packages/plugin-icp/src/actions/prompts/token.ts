@@ -40,18 +40,23 @@ export const logoPromptTemplate = (basePrompt: string) =>
     `Create a crypto meme token logo:
 	- Concept: ${basePrompt}
 	- NO text/words, numbers, copyrighted elements, or generic crypto symbols
-	- Square format, centered composition
-	- Highly detailed
-	- 3-4 main colors maximum
+	- Design MUST fill entire square canvas edge-to-edge
+	- NO small centered icons with empty backgrounds
+	- NO floating logos or badges
+	- The main design should be the full composition itself
+	- 3-4 colors using:
+		* Two main colors + one accent
+		* Split complementary scheme
+		* Analogous with contrast
 	- Must be clear at all sizes
 	- Works on light/dark backgrounds
 
 	Style Guide (choose most appropriate):
 	For animals/creatures:
-	- Cute/friendly → Pixel Art (8-bit, limited palette)
-	- Bold/memorable → Pop Art (comic style, vibrant)
-	- Natural → Hand Drawn (organic, textured)
-	- Fierce → Cyberpunk (neon, tech elements)
+	- Cute/friendly → Full-frame Pixel Art character/element
+	- Bold/memorable → Edge-to-edge Pop Art design
+	- Natural → Complete canvas illustration
+	- Fierce → Full-coverage Cyberpunk design
 
 	For tech/future:
 	- Professional → 3D Modern (glossy, dimensional)
@@ -70,4 +75,6 @@ export const logoPromptTemplate = (basePrompt: string) =>
 	- Dynamic → Abstract Motion (flowing elements)
 	- Smooth → Gradient & Glass (transitions, depth)
 
-	Keep it crypto-relevant, unique, and memorable. Avoid corporate looks, complex illustrations, and photorealism.`;
+	Keep it crypto-relevant, unique, and memorable. Avoid corporate looks, complex illustrations, and photorealism.
+
+	Important: Create a cohesive design that extends to the edges of the canvas. Think of it as a complete illustration rather than a logo with background. The subject matter should be integrated into the entire space, not floating or centered with empty space.`;
