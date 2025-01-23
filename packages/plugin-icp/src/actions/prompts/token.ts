@@ -6,7 +6,8 @@ Please generate:
 1. A catchy and fun token name that reflects the theme
 2. A 3-4 letter symbol based on the name (all caps)
 3. An engaging and humorous description (include emojis)
-4. Set other fields to null
+4. Principal ID (pid) should be extracted from the recent messages if provided (format: "j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae"), otherwise set to null
+5. Set other fields to null
 
 Example response:
 \`\`\`json
@@ -17,18 +18,46 @@ Example response:
     "logo": null,
     "website": null,
     "twitter": null,
-    "telegram": null
+    "telegram": null,
+    "pid": "j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae"
 }
 \`\`\`
 
 Generate appropriate meme token information based on the user's description.
 Respond with a JSON markdown block containing only the generated values.`;
 
-export const logoPromptTemplate = `Based on this token idea: "{{description}}", create a detailed prompt for generating a logo image.
-The prompt should describe visual elements, style, and mood for the logo.
-Focus on making it memorable and suitable for a cryptocurrency token.
-Keep the response short and specific.
-Respond with only the prompt text, no additional formatting.
+export const logoPromptTemplate = (basePrompt: string) =>
+    `Create a crypto meme token logo:
+	- Concept: ${basePrompt}
+	- NO text/words, numbers, copyrighted elements, or generic crypto symbols
+	- Square format, centered composition
+	- Highly detailed
+	- 3-4 main colors maximum
+	- Must be clear at all sizes
+	- Works on light/dark backgrounds
 
-Example for a dog-themed token:
-"A playful cartoon dog face with a cryptocurrency symbol on its collar, using vibrant colors and bold outlines, crypto-themed minimal style"`;
+	Style Guide (choose most appropriate):
+	For animals/creatures:
+	- Cute/friendly → Pixel Art (8-bit, limited palette)
+	- Bold/memorable → Pop Art (comic style, vibrant)
+	- Natural → Hand Drawn (organic, textured)
+	- Fierce → Cyberpunk (neon, tech elements)
+
+	For tech/future:
+	- Professional → 3D Modern (glossy, dimensional)
+	- Disruptive → Neo Brutalism (bold, high contrast)
+	- Futuristic → Synthwave (neon grid, retro-future)
+	- Abstract → Crypto-Abstract (nodes, tech patterns)
+
+	For memes/culture:
+	- Internet culture → Vaporwave (retro-future, glitch)
+	- Gaming → Pixel Art/Retro Console
+	- Pop culture → Pop Art (bold, iconic)
+
+	For abstract concepts:
+	- Complex → Sacred Geometry (symmetrical patterns)
+	- Simple → Minimalist (clean shapes)
+	- Dynamic → Abstract Motion (flowing elements)
+	- Smooth → Gradient & Glass (transitions, depth)
+
+	Keep it crypto-relevant, unique, and memorable. Avoid corporate looks, complex illustrations, and photorealism.`;

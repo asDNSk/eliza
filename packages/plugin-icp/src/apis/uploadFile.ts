@@ -16,28 +16,26 @@ interface UploadResponse {
 
 export async function uploadFileToWeb3Storage(
     base64Data: string,
-    fileName: string = "image.png"
+    fileName: string = "image"
 ): Promise<UploadResponse> {
     try {
-        // Remove base64 URL prefix (if exists)
-        const cleanBase64 = base64Data.replace(/^data:image\/\w+;base64,/, "");
+        // Extract MIME type from base64 data
+        const mimeType =
+            base64Data.match(/^data:([^;]+);base64,/)?.[1] || "image/png";
 
-        // Convert base64 to Blob
-        const byteCharacters = atob(cleanBase64);
-        const byteNumbers = new Array(byteCharacters.length);
+        // Add file extension based on MIME type if fileName doesn't have one
+        const extension = mimeType.split("/")[1];
+        const fileNameWithExt = fileName.includes(".")
+            ? fileName
+            : `${fileName}.${extension}`;
 
-        for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
-        }
+        // Convert base64 to Blob directly
+        const base64Response = await fetch(base64Data);
+        const blob = await base64Response.blob();
 
-        const byteArray = new Uint8Array(byteNumbers);
-        const blob = new Blob([byteArray], { type: "image/png" });
-
-        // Create file object
-        const file = new File([blob], fileName, { type: "image/png" });
-
+        // Create form data and append file
         const formData = new FormData();
-        formData.append("file", file);
+        formData.append("file", blob, fileNameWithExt);
 
         const response = await fetch(WEB3_STORAGE_API_HOST, {
             method: "POST",

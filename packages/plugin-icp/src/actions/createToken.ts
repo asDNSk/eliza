@@ -64,11 +64,9 @@ async function generateTokenLogo(
     description: string,
     runtime: IAgentRuntime
 ): Promise<string | null> {
-    const logoPrompt = `Create a fun and memorable logo for a cryptocurrency token with these characteristics: ${description}. The logo should be simple, iconic, and suitable for a meme token. Style: minimal, bold colors, crypto-themed.`;
-
     const result = await generateImage(
         {
-            prompt: logoPrompt,
+            prompt: description,
             width: 512,
             height: 512,
             count: 1,
@@ -137,7 +135,7 @@ export const executeCreateToken: Action = {
         } else {
             state = await runtime.updateRecentMessageState(state);
         }
-
+        elizaLogger.log("createToken state:", state);
         const createTokenContext = composeContext({
             state,
             template: createTokenTemplate,
@@ -148,19 +146,11 @@ export const executeCreateToken: Action = {
             context: createTokenContext,
             modelClass: ModelClass.LARGE,
         });
-
+        elizaLogger.log("createToken response:", response);
         try {
-            const logoPromptContext = composeContext({
-                state,
-                template: logoPromptTemplate.replace(
-                    "{{description}}",
-                    response.description
-                ),
-            });
-
             const logoPrompt = await generateText({
                 runtime,
-                context: logoPromptContext,
+                context: logoPromptTemplate(response.description),
                 modelClass: ModelClass.SMALL,
             });
 
