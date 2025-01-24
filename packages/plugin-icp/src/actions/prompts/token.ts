@@ -1,20 +1,32 @@
-export const createTokenTemplate = `Extract the most recent token idea or description from these recent messages and generate creative and memorable values for a new meme token on PickPump:
+export const createTokenTemplate = `Extract token information from these recent messages and generate creative values for a new meme token on PickPump:
 
 Recent conversation context:
 {{recentMessages}}
 
-First, identify and extract the latest token idea or description from the conversation above.
-Then, based on that extracted idea, generate:
-1. A catchy and fun token name that reflects the theme
-2. A 3-4 letter symbol based on the name (all caps)
-3. An engaging and humorous description - Some style examples:
+First, carefully analyze the conversation above to:
+1. Extract any existing token name and symbol if explicitly mentioned
+2. Extract the latest token idea or description
+
+Then generate the token information following these rules:
+- If a token name is found in the messages, use it exactly as mentioned
+- If a token symbol is found in the messages, use it exactly as mentioned (must be 2-6 letters)
+- If name or symbol are not found, create new ones based on the latest token idea
+- Generate an engaging description based on the extracted token idea/theme
+
+Generate:
+1. Token name: Use existing from messages or create a catchy new one that reflects the theme
+2. Symbol: Use existing from messages or create a 2-6 letter symbol (all caps). If extracted symbol is longer than 6 letters, create a new appropriate symbol
+3. An engaging and humorous description based on the extracted token idea. Make it memorable using elements like:
+   - Clever wordplay related to the token's theme
+   - Relevant cultural references
+   - Humor that matches the token's concept
+   - Optional emojis that fit naturally
+   Style examples for reference:
    - "Much wow! Such gains! The first Doge-approved token for rocket science!"
    - "In a world where tokens come and go, one meme dared to be different"
    - "Not your grandma's token, unless your grandma is really into experimental physics"
    - "Turning coffee into code since 2024. Side effects may include spontaneous wealth"
    - "The token that puts the 'fun' in fungible and the 'able' in unstable"
-
-Feel free to be creative with the description. Use humor, wordplay, cultural references, and emojis (optional) in a way that naturally fits the token's theme. Don't force any specific format or style.
 
 4. Principal ID (pid) should be extracted from the recent messages if provided (format: "j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae"), otherwise set to null
 5. Set other fields to null
@@ -23,7 +35,7 @@ Example response:
 \`\`\`json
 {
     "name": "CatLaser",
-    "symbol": "PAWS",
+    "symbol": "LASER",
     "description": "The first token powered by feline laser-chasing energy. Warning: May cause sudden urges to invest in red dot technology",
     "logo": null,
     "website": null,
@@ -33,7 +45,7 @@ Example response:
 }
 \`\`\`
 
-Generate appropriate meme token information based on the extracted latest idea.
+Generate appropriate meme token information based on the extracted information and latest idea.
 Respond with a JSON markdown block containing only the generated values.`;
 
 export const logoPromptTemplate = (basePrompt: string) =>
