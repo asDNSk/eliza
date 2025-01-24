@@ -1,4 +1,4 @@
-[@ai16z/eliza v0.1.5-alpha.1](../index.md) / GenerationOptions
+[@elizaos/core v0.1.7](../index.md) / GenerationOptions
 
 # Interface: GenerationOptions
 
@@ -12,9 +12,9 @@ Configuration options for generating objects with a model.
 
 #### Defined in
 
-packages/core/src/generation.ts:1058
+[packages/core/src/generation.ts:1516](https://github.com/elizaOS/eliza/blob/main/packages/core/src/generation.ts#L1516)
 
-***
+---
 
 ### context
 
@@ -22,9 +22,9 @@ packages/core/src/generation.ts:1058
 
 #### Defined in
 
-packages/core/src/generation.ts:1059
+[packages/core/src/generation.ts:1517](https://github.com/elizaOS/eliza/blob/main/packages/core/src/generation.ts#L1517)
 
-***
+---
 
 ### modelClass
 
@@ -32,9 +32,9 @@ packages/core/src/generation.ts:1059
 
 #### Defined in
 
-packages/core/src/generation.ts:1060
+[packages/core/src/generation.ts:1518](https://github.com/elizaOS/eliza/blob/main/packages/core/src/generation.ts#L1518)
 
-***
+---
 
 ### schema?
 
@@ -42,9 +42,9 @@ packages/core/src/generation.ts:1060
 
 #### Defined in
 
-packages/core/src/generation.ts:1061
+[packages/core/src/generation.ts:1519](https://github.com/elizaOS/eliza/blob/main/packages/core/src/generation.ts#L1519)
 
-***
+---
 
 ### schemaName?
 
@@ -52,9 +52,9 @@ packages/core/src/generation.ts:1061
 
 #### Defined in
 
-packages/core/src/generation.ts:1062
+[packages/core/src/generation.ts:1520](https://github.com/elizaOS/eliza/blob/main/packages/core/src/generation.ts#L1520)
 
-***
+---
 
 ### schemaDescription?
 
@@ -62,9 +62,9 @@ packages/core/src/generation.ts:1062
 
 #### Defined in
 
-packages/core/src/generation.ts:1063
+[packages/core/src/generation.ts:1521](https://github.com/elizaOS/eliza/blob/main/packages/core/src/generation.ts#L1521)
 
-***
+---
 
 ### stop?
 
@@ -72,9 +72,9 @@ packages/core/src/generation.ts:1063
 
 #### Defined in
 
-packages/core/src/generation.ts:1064
+[packages/core/src/generation.ts:1522](https://github.com/elizaOS/eliza/blob/main/packages/core/src/generation.ts#L1522)
 
-***
+---
 
 ### mode?
 
@@ -82,14 +82,14 @@ packages/core/src/generation.ts:1064
 
 #### Defined in
 
-packages/core/src/generation.ts:1065
+[packages/core/src/generation.ts:1523](https://github.com/elizaOS/eliza/blob/main/packages/core/src/generation.ts#L1523)
 
-***
+---
 
-### experimental\_providerMetadata?
+### experimental_providerMetadata?
 
-> `optional` **experimental\_providerMetadata**: `Record`\<`string`, `unknown`\>
+> `optional` **experimental_providerMetadata**: `Record`\<`string`, `unknown`\>
 
 #### Defined in
 
-packages/core/src/generation.ts:1066
+[packages/core/src/generation.ts:1524](https://github.com/elizaOS/eliza/blob/main/packages/core/src/generation.ts#L1524)

@@ -1,4 +1,4 @@
-[@ai16z/eliza v0.1.5-alpha.1](../index.md) / LoggingLevel
+[@elizaos/core v0.1.7](../index.md) / LoggingLevel
 
 # Enumeration: LoggingLevel
 
@@ -10,9 +10,9 @@
 
 #### Defined in
 
-packages/core/src/types.ts:1149
+[packages/core/src/types.ts:1300](https://github.com/elizaOS/eliza/blob/main/packages/core/src/types.ts#L1300)
 
-***
+---
 
 ### VERBOSE
 
@@ -20,9 +20,9 @@ packages/core/src/types.ts:1149
 
 #### Defined in
 
-packages/core/src/types.ts:1150
+[packages/core/src/types.ts:1301](https://github.com/elizaOS/eliza/blob/main/packages/core/src/types.ts#L1301)
 
-***
+---
 
 ### NONE
 
@@ -30,4 +30,4 @@ packages/core/src/types.ts:1150
 
 #### Defined in
 
-packages/core/src/types.ts:1151
+[packages/core/src/types.ts:1302](https://github.com/elizaOS/eliza/blob/main/packages/core/src/types.ts#L1302)

@@ -26,7 +26,7 @@ COPY knowledge ./knowledge
 
 # Install dependencies and build the project
 RUN pnpm install \
-    && pnpm build \
+    && pnpm build-docker \
     && pnpm prune --prod
 
 # Create a new stage for the final image
