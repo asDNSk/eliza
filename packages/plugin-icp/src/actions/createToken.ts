@@ -212,25 +212,37 @@ export const executeCreateToken: Action = {
             {
                 user: "{{user1}}",
                 content: {
-                    text: "I want to create a token on ICP",
+                    text: "I want to create a token",
                 },
             },
             {
-                user: "NEKONE",
+                user: "{{user2}}",
                 content: {
-                    text: "I'll help you create a token on the Internet Computer! 🚀\n\nYou can either:\n1. Tell me your token name and description directly, or\n2. Let me help you brainstorm some ideas\n\nWhat would you prefer? 🤔",
+                    text: "I'll help you create a token on the Internet Computer! 🚀\n\nYou have two options:\n1. Share your own token idea directly\n2. Let me help you brainstorm some creative ideas\n\nWhich would you prefer? 🤔",
                 },
             },
             {
                 user: "{{user1}}",
                 content: {
-                    text: "I have my own idea - GameCoin for in-game purchases and rewards. My PID is j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae",
+                    text: "I have my own idea for a coffee token",
                 },
             },
             {
-                user: "NEKONE",
+                user: "{{user2}}",
                 content: {
-                    text: "Great! Let me confirm the details:\n\n🎮 Token Name: GameCoin\n🎯 Description: Used for in-game purchases and rewards\n🆔 Creator PID: j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae\n\nPlease confirm if these details are correct by replying 'yes'!",
+                    text: "Excellent! To proceed with your coffee token, I'll need:\n\n1. Your preferred token name\n2. A brief description of its purpose\n3. Your Principal ID (PID)\n\nPlease share these details! ☕",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "I want to call it BrewCoin, it's for coffee lovers to earn rewards. My PID is j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "Perfect! Please review these details carefully:\n\n☕ Token Name: BrewCoin\n📝 Description: For coffee lovers to earn rewards\n🆔 PID: j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae\n\nAre all these details correct? Please reply with 'yes' to create your token.",
                 },
             },
             {
@@ -240,28 +252,13 @@ export const executeCreateToken: Action = {
                 },
             },
             {
-                user: "NEKONE",
+                user: "{{user2}}",
                 content: {
-                    text: "Perfect! Creating your GameCoin token now! 🎮",
+                    text: "Excellent! Creating your BrewCoin token now! ☕",
                     action: "CREATE_TOKEN",
                     data: {
                         pid: "j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae",
                     },
-                },
-            },
-        ],
-        [
-            {
-                user: "{{user1}}",
-                content: {
-                    text: "Create GameCoin with PID: j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae",
-                },
-            },
-            {
-                user: "NEKONE",
-                content: {
-                    text: "Failed to create token. Please try again later.",
-                    action: "NONE",
                 },
             },
         ],

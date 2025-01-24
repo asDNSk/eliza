@@ -1,5 +1,5 @@
+import { elizaLogger } from "@elizaos/core";
 import { WEB3_STORAGE_API_HOST } from "../constants/apis";
-
 interface UploadResponse {
     success: boolean;
     cid?: string;
@@ -28,13 +28,10 @@ export async function uploadFileToWeb3Storage(
         const fileNameWithExt = fileName.includes(".")
             ? fileName
             : `${fileName}.${extension}`;
-
-        // Convert base64 to Blob directly
-        const base64Response = await fetch(base64Data);
-        const blob = await base64Response.blob();
-
-        // Create form data and append file
+        const imageBuffer = Buffer.from(base64Data, "base64");
         const formData = new FormData();
+        const blob = new Blob([imageBuffer], { type: mimeType });
+
         formData.append("file", blob, fileNameWithExt);
 
         const response = await fetch(WEB3_STORAGE_API_HOST, {

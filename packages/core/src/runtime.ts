@@ -452,8 +452,6 @@ export class AgentRuntime implements IAgentRuntime {
                 await this.processCharacterKnowledge(stringKnowledge);
             }
         }
-
-        await this.processCharacterKnowledge(this.character.knowledge);
     }
 
     async stop() {
