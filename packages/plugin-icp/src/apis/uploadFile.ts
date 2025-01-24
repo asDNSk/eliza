@@ -1,5 +1,6 @@
 import { elizaLogger } from "@elizaos/core";
 import { WEB3_STORAGE_API_HOST } from "../constants/apis";
+import axios from "axios";
 interface UploadResponse {
     success: boolean;
     cid?: string;
@@ -19,31 +20,36 @@ export async function uploadFileToWeb3Storage(
     fileName: string = "image"
 ): Promise<UploadResponse> {
     try {
-        // Extract MIME type from base64 data
-        const mimeType =
-            base64Data.match(/^data:([^;]+);base64,/)?.[1] || "image/png";
+        let base64Content: string;
+        let mimeType: string;
 
-        // Add file extension based on MIME type if fileName doesn't have one
-        const extension = mimeType.split("/")[1];
-        const fileNameWithExt = fileName.includes(".")
-            ? fileName
-            : `${fileName}.${extension}`;
-        const imageBuffer = Buffer.from(base64Data, "base64");
+        // 判断是否包含 data:image 前缀
+        if (base64Data.startsWith("data:")) {
+            const matches = base64Data.match(/^data:([^;]+);base64,(.+)$/);
+            if (!matches) {
+                throw new Error("Invalid base64 format");
+            }
+            mimeType = matches[1];
+            base64Content = matches[2];
+        } else {
+            // 直接使用 base64 字符串
+            base64Content = base64Data;
+            mimeType = "image/png";
+        }
+        const byteCharacters = atob(base64Content);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) {
+            byteNumbers[i] = byteCharacters.charCodeAt(i);
+        }
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], { type: "image/png" });
         const formData = new FormData();
-        const blob = new Blob([imageBuffer], { type: mimeType });
-
-        formData.append("file", blob, fileNameWithExt);
-
-        const response = await fetch(WEB3_STORAGE_API_HOST, {
-            method: "POST",
-            body: formData,
-        });
-
-        if (!response.ok) {
+        formData.append("file", blob);
+        const response = await axios.post(WEB3_STORAGE_API_HOST, formData);
+        if (response.status !== 200) {
             throw new Error(`Upload failed with status: ${response.status}`);
         }
-
-        const result: UploadResponse = await response.json();
+        const result: UploadResponse = response.data;
         return result;
     } catch (error) {
         return {

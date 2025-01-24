@@ -15,5 +15,7 @@ export default defineConfig({
         "https",
         "http",
         "agentkeepalive",
+        "axios",
+        "form-data",
     ],
 });
