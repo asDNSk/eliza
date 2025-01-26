@@ -256,9 +256,69 @@ export const executeCreateToken: Action = {
                 content: {
                     text: "Excellent! Creating your BrewCoin token now! ☕",
                     action: "CREATE_TOKEN",
-                    data: {
-                        pid: "j6jni-euxrr-7s6ef-vb2wt-dovvi-u7772-a6exj-kdhru-swdod-q3w44-uae",
-                    },
+                },
+            },
+        ],
+        [
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "I want to create a token.",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "I'll help you create a token on the Internet Computer! 🚀\n\nYou have two options:\n1. Share your own token idea directly\n2. Let me help you brainstorm some creative ideas\n\nWhich would you prefer? 🤔",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Please help me brainstorm some ideas",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "I'd love to help! Let me suggest a few creative token ideas:\n\n1. 🌱 GreenCoin - A token that rewards eco-friendly actions and sustainable practices\n2. 🎮 GamersUnite - A token for gaming communities to trade in-game items\n3. 🎨 ArtBlock - A token for digital artists to monetize their creations\n4. 🏃 FitRewards - A token that incentivizes fitness and healthy living\n\nDo any of these interest you, or would you like more suggestions? 💡",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "I like the GreenCoin idea!",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "Great choice! GreenCoin could be really impactful. To create it, I'll need:\n\n1. Your Principal ID (PID)\n2. Would you like to keep the name 'GreenCoin'?\n3. Should we stick with the eco-friendly rewards concept, or would you like to modify it?\n\nPlease share your thoughts! 🌱",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "Yes, let's keep it as GreenCoin for eco rewards. My PID is 2vxsx-fae",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "Perfect! Please review these details:\n\n🌱 Token Name: GreenCoin\n📝 Description: A token that rewards eco-friendly actions and promotes environmental sustainability\n🆔 PID: 2vxsx-fae\n\nDoes everything look correct? Reply 'yes' to create your token.",
+                },
+            },
+            {
+                user: "{{user1}}",
+                content: {
+                    text: "yes",
+                },
+            },
+            {
+                user: "{{user2}}",
+                content: {
+                    text: "Excellent! Creating your GreenCoin token now! 🌱",
+                    action: "CREATE_TOKEN",
                 },
             },
         ],
